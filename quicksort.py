@@ -1,34 +1,25 @@
-def quickSort_inplace(array: list, begin: int, end: int) -> list:
-    end = len(array) - 1
-
-    def partition(array: list, begin: int, end: int) -> int:
-        pivot = begin
-        for i in range(begin + 1 , end + 1):
-            if array[i] <= array[begin]:
-                pivot += 1
-                array[i], array[pivot] = array[pivot], array[i]
-        array[pivot], array[begin] = array[begin], array[pivot]
-        return pivot
-
-    def _quickSort(array, begin, end):
-        if begin >= end:
+def quickSort_inPlace(array: list):
+    def _quickSort(array, fst, lst):
+        if fst >= lst:
             return
-        pivot = partition(array, begin, end)
-        _quickSort(array, begin, pivot - 1)
-        _quickSort(array, pivot + 1, end)
-    
-    return _quickSort(array,begin, end)
+        pivot = array[lst]
+        i, j = fst, lst
+        while i <= j:
+            while array[i] < pivot: i += 1
+            while array[j] > pivot: j -= 1
+            if i <= j:
+                array[i], array[j] = array[j], array[i]
+                i += 1
+                j -= 1
+        _quickSort(array, fst, j)
+        _quickSort(array, i, lst)
+    _quickSort(array, 0, len(array)-1)
 
-
-def quickSort(array: list, pivot: int) -> list:
+def quickSort(array: list) -> list:
     if len(array) <= 1:
         return array
         
-    pivot_elem = array[pivot]
-    if pivot != 0:
-        array[pivot] = array[0]
-        array[0] = pivot_elem
-
+    pivot_elem = array[0]
     less = []
     equal = []
     greater = []
@@ -42,3 +33,4 @@ def quickSort(array: list, pivot: int) -> list:
             greater.append(elem)
     
     return quickSort(less) + equal + quickSort(greater)
+
