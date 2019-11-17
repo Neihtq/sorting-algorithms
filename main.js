@@ -36,13 +36,11 @@ var colors = d3.scale.linear()
     .domain([0, myData.length])
     .range(['#90ee90', '#30c230']);
 
-var data = [800, 100, 200, 320, 50, 500, 300, 115];
+var data = [800, 100, 200, 320, 50, 500, 300, 115, 333, 777, 423, 123, 221, 733, 801, 55, 70, 99, 60, 653];
 
 var margin = {top: 50, right: 20, bottom: 30, left: 40},
     width = 960 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
-
-var formatPercent = d3.format("d");
 
 var x = d3.scale.ordinal()
     .rangeRoundBands([0, width], .1, 1);
@@ -85,9 +83,10 @@ svg.append("text")
 svg.selectAll(".bar")
     .data(data)
     .enter().append("rect")
-    .style('fill', function (d, i) {
+    .style('fill', 'DarkGreen')
+    /*.style('fill', function (d, i) {
         return colors(colorPalette[d])
-    })
+    })*/
     .attr("class", "bar")
     .attr("x", function(d) { return x(d); })
     .attr("width", x.rangeBand())
@@ -96,31 +95,62 @@ svg.selectAll(".bar")
 
 d3.select("input").on("change", change);
 
-var sortTimeout = setTimeout(function() {
-    d3.select("input").property("checked", true).each(change);
-}, 2000);
-
 function change() {
-    clearTimeout(sortTimeout);
+    quickSortInPlace();
+}
 
-    // Copy-on-write since tweens are evaluated after a delay.
-    var x0 = x.domain(data.sort(this.checked
-        ? function(a, b) { return b - a; }
-        : function(a, b) { return d3.ascending(a, b); })
+function animate() {
+    var x0 = x.domain(data
         .slice());
 
-    svg.selectAll(".bar")
+   svg.selectAll(".bar")
         .sort(function(a, b) { return x0(a) - x0(b); });
 
     var transition = svg.transition().duration(500),
         delay = function(d, i) { return i * 25; };
 
+    // kick off animation for bars
     transition.selectAll(".bar")
         .delay(delay)
         .attr("x", function(d) { return x0(d); });
 
-    transition.select(".x.axis")
+    // kick off animation for x labels
+    transition.selectAll(".x.axis")
         .call(xAxis)
         .selectAll("g")
         .delay(delay);
+}
+
+function quickSortInPlace(){
+    animate();
+    async function qs(fst, lst) {
+        if (fst >= lst) {
+            return
+        }
+        let pivot = data[lst];
+        var i = fst;
+        var j = lst;
+        while (i <= j) {
+            while (data[i] < pivot) { i++; }
+            while (data[j] > pivot) { j--; }
+            if (i <= j) {
+                let tmp = data[i];
+                data[i] = data[j];
+                data[j] = tmp;
+                if (i != j ) {
+                    animate();
+                    await sleep(500);
+                }
+                i++;
+                j--;
+            }
+        }
+        await qs(fst, j);
+        await qs(i, lst);
+    }
+    qs(0, data.length - 1)
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
