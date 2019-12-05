@@ -17,24 +17,6 @@ for (i = 0; i < tmp.length; i++) {
     colorPalette[tmp[i]] = i
 }
 
-var height = 1080 - margin.top - margin.bottom;
-var width = 1920 - margin.right - margin.left;
-var barWidth = 35;
-var barOffset = 5;
-var animeDuration = 700;
-var animateDelay = 30;
-
-var yScale = d3.scale.linear()
-    .domain([0, d3.max(myData)])
-    .range([0, height]);
-
-var xScale = d3.scale.ordinal()
-    .domain(myData)
-    .rangeRoundBands(myData, .1, 1);
-
-var colors = d3.scale.linear()
-    .domain([0, myData.length])
-    .range(['#90ee90', '#30c230']);
 
 var data = [800, 100, 200, 320, 50, 500, 300, 115, 333, 777, 423, 123, 221, 733, 801, 55, 70, 99, 60, 653];
 
@@ -84,14 +66,11 @@ svg.selectAll(".bar")
     .data(data)
     .enter().append("rect")
     .style('fill', 'DarkGreen')
-    /*.style('fill', function (d, i) {
-        return colors(colorPalette[d])
-    })*/
     .attr("class", "bar")
     .attr("x", function(d) { return x(d); })
     .attr("width", x.rangeBand())
     .attr("y", function(d) { return y(d); })
-    .attr("height", function(d) { return height - y(d); })
+    .attr("height", function(d) { return height - y(d); });
 
 d3.select("input").on("change", change);
 
@@ -99,7 +78,21 @@ function change() {
     quickSortInPlace();
 }
 
+function colorizePivot(index) {
+    svg.selectAll(".bar")
+        .each(function (d, i) {
+            if (i === index) {
+                d3.select(this).style('fill', 'red');
+            }
+        });
+}
+
+function recolorize() {
+    svg.selectAll(".bar").style('fill', 'DarkGreen');
+}
+
 function animate() {
+
     var x0 = x.domain(data
         .slice());
 
@@ -128,8 +121,9 @@ function quickSortInPlace(){
             return
         }
         let pivot = data[lst];
-        var i = fst;
-        var j = lst;
+        colorizePivot(lst)
+        let i = fst;
+        let j = lst;
         while (i <= j) {
             while (data[i] < pivot) { i++; }
             while (data[j] > pivot) { j--; }
@@ -137,7 +131,7 @@ function quickSortInPlace(){
                 let tmp = data[i];
                 data[i] = data[j];
                 data[j] = tmp;
-                if (i != j ) {
+                if (i !== j ) {
                     animate();
                     await sleep(500);
                 }
@@ -145,6 +139,7 @@ function quickSortInPlace(){
                 j--;
             }
         }
+        recolorize();
         await qs(fst, j);
         await qs(i, lst);
     }
