@@ -4,11 +4,36 @@
     </head>
 
     <body>
-    <h1>Quicksort animation</h1>
-        <label><input type="checkbox" id="sortbutton">Sort values</label>
-        <button type="button" onclick="change()">Sort</button>
+        <h1>Quicksort animation</h1>
+        <input type="number" id="number">
+        <button type="button" onclick="add()">Add</button>
+        <p>
+        <button type="button" onclick="sort()">Sort</button>
+        <button type="button" onclick="removeAll()">Clear</button>
         <script src="https://d3js.org/d3.v3.min.js"></script>
         <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
         <script src="main.js"></script>
+        <script>
+            function removeAll() {
+                if (data.length != 0) {
+                    data = []
+                    d3.selectAll("g > *").remove();
+                    draw();
+                }
+            }
+
+            function sort() {
+                quickSortInPlace();
+            }
+
+            function add() {
+                var len = data.length
+                number = parseInt(document.getElementById("number").value);
+                if (!(data.includes(number))){
+                    data.push(number);
+                    updateData();
+                }
+            }
+        </script>
     </body>
 </html>

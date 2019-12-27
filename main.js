@@ -1,24 +1,4 @@
-var myData = [800, 100, 200, 320, 50, 500, 300, 115];
-
-var margin = {
-    top: 30,
-    right: 30,
-    bottom: 40,
-    left: 50
-};
-var tmp = myData.slice();
-
-tmp.sort(function (a,b) {
-    return a - b;
-});
-
-var colorPalette = {};
-for (i = 0; i < tmp.length; i++) {
-    colorPalette[tmp[i]] = i
-}
-
-
-var data = [800, 100, 200, 320, 50, 500, 300, 115, 333, 777, 423, 123, 221, 733, 801, 55, 70, 99, 60, 653];
+var data = [];
 
 var margin = {top: 50, right: 20, bottom: 30, left: 40},
     width = 960 - margin.left - margin.right,
@@ -40,43 +20,43 @@ var svg = d3.select("body").append("svg")
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-x.domain(data);
-y.domain([0, d3.max(data)]);
 
-svg.append("g")
-    .attr("class", "x axis")
-    .attr("transform", "translate(0," + height + ")")
-    .call(xAxis);
+draw();
 
-svg.append("g")
-    .attr("class", "y axis")
-    .append("text")
-    .attr("transform", "rotate(-90)")
-    .attr("y", 6)
-    .attr("dy", ".71em")
-    .style("text-anchor", "end")
+function draw() {
+    x.domain(data);
+    y.domain([0, d3.max(data)]);
 
-svg.append("text")
-    .attr("x", (width / 2))
-    .attr("y", 0 - (margin.top / 2))
-    .attr("text-anchor", "middle")
-    .style("font-size", "16px");
+    svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
 
-svg.selectAll(".bar")
-    .data(data)
-    .enter().append("rect")
-    .style('fill', 'DarkGreen')
-    .attr("class", "bar")
-    .attr("x", function(d) { return x(d); })
-    .attr("width", x.rangeBand())
-    .attr("y", function(d) { return y(d); })
-    .attr("height", function(d) { return height - y(d); });
+    svg.append("g")
+        .attr("class", "y axis")
+        .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("dy", ".71em")
+        .style("text-anchor", "end")
 
-d3.select("input").on("change", change);
+    svg.append("text")
+        .attr("x", (width / 2))
+        .attr("y", 0 - (margin.top / 2))
+        .attr("text-anchor", "middle")
+        .style("font-size", "16px");
 
-function change() {
-    quickSortInPlace();
+    svg.selectAll(".bar")
+        .data(data)
+        .enter().append("rect")
+        .style('fill', 'DarkGreen')
+        .attr("class", "bar")
+        .attr("x", function(d) { return x(d); })
+        .attr("width", x.rangeBand())
+        .attr("y", function(d) { return y(d); })
+        .attr("height", function(d) { return height - y(d); });
 }
+
 
 function colorizePivot(index) {
     svg.selectAll(".bar")
@@ -113,6 +93,40 @@ function animate() {
         .selectAll("g")
         .delay(delay);
 }
+
+function updateData() {
+    var x0 = x.domain(data
+        .slice());
+    var y0 = y.domain([0, d3.max(data)]);
+
+    svg.selectAll(".bar")
+        .data(data)
+        .enter().append("rect")
+        .style('fill', 'DarkGreen')
+        .attr("class", "bar")
+        .attr("x", function(d) { return x(d); })
+        .attr("y", function(d) { return y(d); })
+        .attr("height", function(d) { return height - y(d); });
+
+    var transition = svg.transition().duration(500),
+        delay = function(d, i) { return i * 25; };
+
+    // kick off animation for bars
+    transition.selectAll(".bar")
+        .delay(delay)
+        .attr("x", function(d) { return x0(d); })
+        .attr("width", x.rangeBand())
+        .attr("y", function(d) { return y0(d); })
+        .attr("height", function(d) { return height - y0(d); });
+
+    // kick off animation for x labels
+    transition.selectAll(".x.axis")
+        .call(xAxis)
+        .selectAll("g")
+        .delay(delay);
+
+}
+
 
 function quickSortInPlace(){
     animate();
