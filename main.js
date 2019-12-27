@@ -1,28 +1,3 @@
-var data = [25, 17, 15, 56, 19, 8];
-
-var margin = {top: 50, right: 20, bottom: 30, left: 40},
-    width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
-
-var x = d3.scale.ordinal()
-    .rangeRoundBands([0, width], .1, 1);
-
-var y = d3.scale.linear()
-    .range([height, 0]);
-
-var xAxis = d3.svg.axis()
-    .scale(x)
-    .orient("bottom");
-
-var svg = d3.select("body").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-
-draw();
-
 function draw() {
     x.domain(data);
     y.domain([0, d3.max(data)]);
@@ -56,7 +31,6 @@ function draw() {
         .attr("y", function(d) { return y(d); })
         .attr("height", function(d) { return height - y(d); });
 }
-
 
 function colorizePivot(index) {
     svg.selectAll(".bar")
@@ -111,7 +85,6 @@ function updateData() {
     var transition = svg.transition().duration(500),
         delay = function(d, i) { return i * 25; };
 
-    // kick off animation for bars
     transition.selectAll(".bar")
         .delay(delay)
         .attr("x", function(d) { return x0(d); })
@@ -119,7 +92,6 @@ function updateData() {
         .attr("y", function(d) { return y0(d); })
         .attr("height", function(d) { return height - y0(d); });
 
-    // kick off animation for x labels
     transition.selectAll(".x.axis")
         .call(xAxis)
         .selectAll("g")
@@ -130,11 +102,13 @@ function updateData() {
 function quickSortInPlace(){
     animate();
     async function qs(fst, lst) {
+        animate();
         if (fst >= lst) {
             return
         }
         let pivot = data[lst];
         colorizePivot(lst)
+        animate();
         let i = fst;
         let j = lst;
         while (i <= j) {
@@ -153,6 +127,7 @@ function quickSortInPlace(){
             }
         }
         recolorize();
+        animate();
         await qs(fst, j);
         await qs(i, lst);
     }
@@ -179,3 +154,66 @@ async function bubbleSort(){
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+function removeChart() {
+    if (data.length != 0) {
+        data = [];
+        d3.selectAll(".bar > *").remove();
+        draw();
+    }
+}
+
+function generate() {
+    removeChart()
+    data = new Array(10).fill(0).map(function(n) {
+      return Math.floor(Math.random() * (500 - 10) + 10);
+    });
+    updateData();
+    document.getElementById("shuffleBtn").disabled = false;
+    document.getElementById("removeBtn").disabled = false;
+}
+
+function shuffle() {
+    var currentIndex = data.length, temporaryValue, randomIndex;
+  
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+  
+      // Pick a remaining element...
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+  
+      // And swap it with the current element.
+      temporaryValue = data[currentIndex];
+      data[currentIndex] = data[randomIndex];
+      data[randomIndex] = temporaryValue;
+    }
+  
+    updateData();
+  }
+
+
+var data = [];
+
+var margin = {top: 50, right: 20, bottom: 30, left: 40},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+var x = d3.scale.ordinal()
+    .rangeRoundBands([0, width], .1, 1);
+
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+draw();
+

@@ -10,26 +10,31 @@
                 <option value="bs">Bubble Sort</option>
         </select>
         <input type="number" id="number">
-        <button type="button" onclick="add()">Add</button>
+        <button id="addBtn" type="button" onclick="add()">Add</button>
         <p>
-        <button type="button" onclick="sort()">Sort</button>
-        <button type="button" onclick="removeAll()">Clear</button>
+        <button id="sortBtn" type="button" onclick="sort()">Sort</button>
+        <button id="removeBtn" type="button" onclick="removeAll()" disabled=True>Clear</button>
+        <button id="generateBtn" type="button" onclick="generate()">Generate Random Array</button>
+        <button id="shuffleBtn" type="button" onclick="shuffle()" disabled=True >Shuffle</button>
         <script src="https://d3js.org/d3.v3.min.js"></script>
         <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
         <script src="main.js"></script>
         <script>
             function removeAll() {
-                if (data.length != 0) {
-                    data = [];
-                    d3.selectAll("g > *").remove();
-                    draw();
-                }
+                removeChart()
+
+                document.getElementById("shuffleBtn").disabled = true;
+                document.getElementById("removeBtn").disabled = true;                
             }
 
             function sort() {
                 var algos = document.getElementById("sortAlgos")
                 var selectedAlgo = algos.options[algos.selectedIndex].value;
-                console.log(selectedAlgo)
+                document.getElementById("shuffleBtn").disabled = true;
+                document.getElementById("removeBtn").disabled = true;
+                document.getElementById("sortBtn").disabled = true;
+                document.getElementById("addBtn").disabled = true;
+                document.getElementById("generateBtn").disabled = true; 
                 switch(selectedAlgo) {
                     case "qs":
                         quickSortInPlace();
@@ -40,6 +45,12 @@
                     default:
                         return
                 }
+
+                document.getElementById("shuffleBtn").disabled = false;
+                document.getElementById("removeBtn").disabled = false;
+                document.getElementById("sortBtn").disabled = false;
+                document.getElementById("addBtn").disabled = false;
+                document.getElementById("generateBtn").disabled = false; 
             }
 
             function add() {
@@ -49,6 +60,9 @@
                     data.push(number);
                     updateData();
                 }
+
+                document.getElementById("shuffleBtn").disabled = false;
+                document.getElementById("removeBtn").disabled = false;
             }
         </script>
     </body>
