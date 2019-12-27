@@ -1,4 +1,4 @@
-var data = [];
+var data = [25, 17, 15, 56, 19, 8];
 
 var margin = {top: 50, right: 20, bottom: 30, left: 40},
     width = 960 - margin.left - margin.right,
@@ -127,7 +127,6 @@ function updateData() {
 
 }
 
-
 function quickSortInPlace(){
     animate();
     async function qs(fst, lst) {
@@ -147,7 +146,7 @@ function quickSortInPlace(){
                 data[j] = tmp;
                 if (i !== j ) {
                     animate();
-                    await sleep(500);
+                    await sleep(650);
                 }
                 i++;
                 j--;
@@ -158,6 +157,23 @@ function quickSortInPlace(){
         await qs(i, lst);
     }
     qs(0, data.length - 1)
+}
+
+async function bubbleSort(){
+    for (i = 0; i < data.length; i++) {
+        for (j = 0; j < data.length - i - 1; j++){
+            colorizePivot(j); 
+            colorizePivot(j + 1);
+            animate();
+            await sleep(300);
+            if (data[j] > data[j + 1]) {
+                [data[j], data[j + 1]] = [data[j + 1], data[j]];
+                animate();
+                await sleep(500);
+            }
+            recolorize();
+        }
+    }
 }
 
 function sleep(ms) {

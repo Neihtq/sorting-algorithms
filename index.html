@@ -4,7 +4,11 @@
     </head>
 
     <body>
-        <h1>Quicksort animation</h1>
+        <h1>Array Sorting Algorithm Animation</h1>
+        <select id="sortAlgos">
+                <option value="qs">Quick Sort</option>
+                <option value="bs">Bubble Sort</option>
+        </select>
         <input type="number" id="number">
         <button type="button" onclick="add()">Add</button>
         <p>
@@ -16,14 +20,26 @@
         <script>
             function removeAll() {
                 if (data.length != 0) {
-                    data = []
+                    data = [];
                     d3.selectAll("g > *").remove();
                     draw();
                 }
             }
 
             function sort() {
-                quickSortInPlace();
+                var algos = document.getElementById("sortAlgos")
+                var selectedAlgo = algos.options[algos.selectedIndex].value;
+                console.log(selectedAlgo)
+                switch(selectedAlgo) {
+                    case "qs":
+                        quickSortInPlace();
+                        break;
+                    case "bs":
+                        bubbleSort();
+                        break;
+                    default:
+                        return
+                }
             }
 
             function add() {
