@@ -8,6 +8,7 @@
         <select id="sortAlgos">
                 <option value="qs">Quick Sort</option>
                 <option value="bs">Bubble Sort</option>
+                <option value="is">Insertion Sort</option>
         </select>
         <input type="number" id="number">
         <button id="addBtn" type="button" onclick="add()">Add</button>
@@ -41,6 +42,9 @@
                         break;
                     case "bs":
                         bubbleSort();
+                        break;
+                    case "is":
+                        insertionSort();
                         break;
                     default:
                         return

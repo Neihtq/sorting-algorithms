@@ -151,6 +151,32 @@ async function bubbleSort(){
     }
 }
 
+
+async function insertionSort() {
+    for (i = 1; i < data.length; i++) {
+        recolorize();
+        colorizePivot(i);
+        for (j = 0; j < i; j++) {
+            if (data[i] < data[j]) {
+                if (j == 0) {
+                    left = data.slice(0, i);
+                    right = data.slice(i + 1);
+                    data = [data[i]].concat(left).concat(right)
+                } else {
+                    left = data.slice(0, j);
+                    middle = data.slice(j, i);
+                    right = data.slice(i+1);
+                    data = left.concat([data[i]]).concat(middle).concat(right);
+                }
+                animate();
+                await sleep(500);
+                recolorize();
+                break; 
+            }
+        }
+    }
+}
+
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -190,7 +216,7 @@ function shuffle() {
     }
   
     updateData();
-  }
+}
 
 
 var data = [];
