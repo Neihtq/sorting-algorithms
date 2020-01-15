@@ -177,6 +177,41 @@ async function insertionSort() {
     }
 }
 
+function mergeSort(arr, l, r) {
+    m = Math.floor((l + r) / 2);
+    left = mergeSort(arr, l, m);
+    right = mergeSort(arr, m+1, r);
+
+    i = j = k = 0;
+    while (i < left.length && j < right.length) {
+        if (left[i] < right[i]) {
+            arr[k] = left[i];
+            i++;
+        } else {
+            arr[k] = right[j];
+            j++;
+        }
+        k++;
+    }
+
+    while (i < left.length) {
+        arr[k] = left[i];
+        i++;
+        k++;
+
+    }
+
+    while (j < right.length) {
+        arr[k] = right[j];
+        j++;
+        k++;
+    }
+
+
+    return merge(left, right);
+}
+
+
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }

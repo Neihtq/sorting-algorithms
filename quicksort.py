@@ -33,4 +33,3 @@ def quickSort(array: list) -> list:
             greater.append(elem)
     
     return quickSort(less) + equal + quickSort(greater)
-

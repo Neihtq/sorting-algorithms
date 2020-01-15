@@ -9,6 +9,7 @@
                 <option value="qs">Quick Sort</option>
                 <option value="bs">Bubble Sort</option>
                 <option value="is">Insertion Sort</option>
+                <option value="ms">Merge Sort</option>
         </select>
         <input type="number" id="number">
         <button id="addBtn" type="button" onclick="add()">Add</button>
@@ -21,6 +22,7 @@
         <script src="https://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
         <script src="main.js"></script>
         <script>
+            generate()
             function removeAll() {
                 removeChart()
 
@@ -46,6 +48,8 @@
                     case "is":
                         insertionSort();
                         break;
+                    case "ms":
+                        mergeSort();
                     default:
                         return
                 }
@@ -58,7 +62,6 @@
             }
 
             function add() {
-                var len = data.length
                 number = parseInt(document.getElementById("number").value);
                 if (!(data.includes(number))){
                     data.push(number);
